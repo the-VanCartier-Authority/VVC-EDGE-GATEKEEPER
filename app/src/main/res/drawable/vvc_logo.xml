@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Fondo Negro -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M0,0h200v200h-200z" />
+    <!-- Composición Geométrica Minimalista Verde Neón -->
+    <path
+        android:strokeColor="#00FF00"
+        android:strokeWidth="2"
+        android:pathData="M50,50 L150,50 L150,150 L50,150 Z" />
+    <path
+        android:strokeColor="#00FF00"
+        android:strokeWidth="4"
+        android:pathData="M70,70 L130,70 L130,130 L70,130 Z" />
+    <path
+        android:fillColor="#00FF00"
+        android:pathData="M90,90 L110,90 L110,110 L90,110 Z" />
+</vector>
