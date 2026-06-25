@@ -24,36 +24,16 @@ jobs:
     - name: Hotfix Manus Gradle Versions
       run: |
         echo "=== CORRIGIENDO COMPATIBILIDAD DE GRADLE ==="
-        sed -i 's/version "8.2.2"/version "8.1.4"/g' build.gradle.kts
-        sed -i 's/version "1.9.22"/version "1.8.10"/g' build.gradle.kts
+        sed -i 's/version "8.2.2"/version "8.1.4"/g' build.gradle.kts || true
+        sed -i 's/version "1.9.22"/version "1.8.10"/g' build.gradle.kts || true
 
     - name: Setup Gradle Environment
       uses: gradle/actions/setup-gradle@v3
       with:
         gradle-version: 8.1.1
 
-    - name: Clean and Compile App with Deep Diagnostics
+    - name: Clean and Compile App
       run: |
-        echo "=== EJECUTANDO COMPILACIÓN CONTROLADA ==="
-        # Ejecutamos la compilación guardando la salida completa
-        ./gradlew :app:assembleDebug --no-daemon > build_output.log 2>&1 || true
-        
-        echo "=== ANÁLISIS DE ANOTACIONES Y ERRORES ESTRUCTURALES ==="
-        # Filtrar errores comunes de compilación, dependencias o sintaxis
-        grep -i -E "error|exception|failure|unresolved" build_output.log | grep -v -E "org.gradle|at org." | head -n 50
-        
-        echo "=== ÚLTIMAS LÍNEAS DEL LOG DE GRADLE ==="
-        tail -n 40 build_output.log
-        
-        if [ ! -f app/build/outputs/apk/debug/app-debug.apk ] && [ ! -f **/build/outputs/apk/debug/*.apk ]; then
-           echo "La compilación falló. Analiza el volcado estructural de arriba."
-           exit 1
-        fi
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: vvc-edge-gatekeeper-debug
-        path: "**/build/outputs/apk/debug/*.apk"
-        retention-days: 7
+        chmod +x gradlew
+        ./gradlew :app:assembleDebug --no-daemon --stacktrace
         
