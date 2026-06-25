@@ -32,18 +32,21 @@ jobs:
       with:
         gradle-version: 8.1.1
 
-    - name: Clean and Compile App with Log Interception
+    - name: Clean and Compile App with Deep Diagnostics
       run: |
         echo "=== EJECUTANDO COMPILACIÓN CONTROLADA ==="
-        # Ejecutamos la tarea redirigiendo la salida para filtrar únicamente los errores reales de código
+        # Ejecutamos la compilación guardando la salida completa
         ./gradlew :app:assembleDebug --no-daemon > build_output.log 2>&1 || true
         
-        echo "=== FILTRANDO ERRORES DE COMPILACIÓN DE KOTLIN ==="
-        grep -E "e: |.*kt:[0-9]+" build_output.log || tail -n 100 build_output.log
+        echo "=== ANÁLISIS DE ANOTACIONES Y ERRORES ESTRUCTURALES ==="
+        # Filtrar errores comunes de compilación, dependencias o sintaxis
+        grep -i -E "error|exception|failure|unresolved" build_output.log | grep -v -E "org.gradle|at org." | head -n 50
         
-        # Forzar el fallo del paso si el archivo APK no se generó para que el pipeline no mienta
+        echo "=== ÚLTIMAS LÍNEAS DEL LOG DE GRADLE ==="
+        tail -n 40 build_output.log
+        
         if [ ! -f app/build/outputs/apk/debug/app-debug.apk ] && [ ! -f **/build/outputs/apk/debug/*.apk ]; then
-           echo "La compilación falló. Revisar los errores de Kotlin impresos arriba."
+           echo "La compilación falló. Analiza el volcado estructural de arriba."
            exit 1
         fi
 
