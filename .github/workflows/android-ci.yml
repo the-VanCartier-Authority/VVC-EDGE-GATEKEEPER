@@ -22,10 +22,16 @@ jobs:
           cache: gradle
 
       - name: Setup Gradle Environment
+vvc-codex/revisar-y-compilar-apk-de-vvc-edge-gatekeeper-580ize
         # Resolución del conflicto: Gradle 8.2.2 no existe; 8.2.1 es la versión válida para este pipeline.
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.2.1
+
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.2.2
+ main
 
       - name: Clean and Compile App
         run: |
