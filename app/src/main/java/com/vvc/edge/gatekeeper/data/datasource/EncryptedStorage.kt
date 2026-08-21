@@ -1,6 +1,7 @@
 package com.vvc.edge.gatekeeper.data.datasource
 
 import android.content.Context
+import com.vvc.edge.gatekeeper.domain.model.FaceVector
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
@@ -19,12 +20,22 @@ class EncryptedStorage(context: Context) {
     )
 
     fun saveFaceVector(vector: FloatArray) {
-        val vectorString = vector.joinToString(",")
-        sharedPreferences.edit().putString("pattern_vector", vectorString).apply()
+        val validatedVector = requireNotNull(FaceVector.from(vector)) {
+            "Only finite face vectors with ${FaceVector.DIMENSION} values can be stored"
+        }
+        val vectorString = validatedVector.data.joinToString(",")
+        sharedPreferences.edit().putString(PATTERN_VECTOR_KEY, vectorString).apply()
     }
 
     fun getFaceVector(): FloatArray? {
-        val vectorString = sharedPreferences.getString("pattern_vector", null) ?: return null
-        return vectorString.split(",").map { it.toFloat() }.toFloatArray()
+        val vectorString = sharedPreferences.getString(PATTERN_VECTOR_KEY, null) ?: return null
+        val values = vectorString.split(",").map { token ->
+            token.toFloatOrNull() ?: return null
+        }.toFloatArray()
+        return FaceVector.from(values)?.data
+    }
+
+    private companion object {
+        const val PATTERN_VECTOR_KEY = "pattern_vector"
     }
 }
