@@ -3,11 +3,13 @@
 **Proyecto:** VVC-EDGE-GATEKEEPER  
 **Fecha:** 21 de agosto de 2026  
 **Estado integrado:** `main`  
-**Commit funcional actual:** `318a6df` (`chore: remove unused compose viewmodel dependency`)
+**Commit funcional de código:** `318a6df` (`chore: remove unused compose viewmodel dependency`)
+
+**HEAD actual de `main`:** `8ff147b` (`docs: align recovery artifact hashes`)
 
 ## Estado final
 
-El proyecto queda **compilable de forma reproducible y con el núcleo de verificación endurecido**. La rama de trabajo fue integrada en `main` después de pasar Android CI en la pull request [#3][2] y nuevamente en el commit final mediante la ejecución [32493417888][1].
+El proyecto queda **compilable de forma reproducible y con el núcleo de verificación endurecido**. La rama de trabajo fue integrada en `main` después de pasar Android CI en la pull request [#3][2] y nuevamente en el commit final mediante la ejecución [32493925317][1].
 
 La validación de instalación, lanzamiento y flujo biométrico en un dispositivo físico no queda marcada como completada. El entorno de ejecución no expone `/dev/kvm`, por lo que el emulador x86_64 no puede arrancar; además, `adb devices -l` no muestra ningún dispositivo conectado. Esta limitación está comprobada en `/home/ubuntu/vvc_emulator.log` y no se convirtió en una afirmación de funcionamiento basada únicamente en análisis estático.
 
@@ -23,7 +25,8 @@ El primer build local falló por ausencia del Android SDK, no por un error de c�
 | Rama de recuperación | `recovery/stabilize-functional-2026-08-21` |
 | Pull request | [#3][2], integrada mediante squash |
 | Commit integrado inicial | `dd6d0cf` |
-| Commit final en `main` | `318a6df` |
+| Commit funcional de código | `318a6df` |
+| HEAD actual de `main` | `8ff147b` |
 | Estado del working tree | Limpio y sincronizado con `origin/main` |
 
 ## Reparaciones aplicadas
@@ -53,7 +56,8 @@ La validación local se ejecutó con el ciclo de limpieza, pruebas, lint y empaq
 | `assembleRelease` | Éxito | `app/build/outputs/apk/release/app-release-unsigned.apk` |
 | Android CI sobre la rama de recuperación | Éxito | Run `32492539956` |
 | Android CI sobre `main` integrado | Éxito | Run `32493060064` |
-| Android CI sobre el commit final | Éxito | Run `32493417888` |
+| Android CI sobre el commit funcional | Éxito | Run `32493417888` |
+| Android CI sobre el HEAD actual de `main` | Éxito | Run `32493925317` |
 | `git diff --check` | Sin errores de whitespace | Ejecutado antes de cada commit |
 
 ### Artefactos
@@ -83,5 +87,5 @@ La aplicación queda **BUILD-STABLE / CORE-VALIDATED / RUNTIME-NOT-VERIFIED**. L
 
 ## Referencias
 
-[1]: https://github.com/the-VanCartier-Authority/VVC-EDGE-GATEKEEPER/actions/runs/32493417888 "Android CI del commit final en main"
+[1]: https://github.com/the-VanCartier-Authority/VVC-EDGE-GATEKEEPER/actions/runs/32493925317 "Android CI del HEAD final en main"
 [2]: https://github.com/the-VanCartier-Authority/VVC-EDGE-GATEKEEPER/pull/3 "Pull request de recuperación funcional"
