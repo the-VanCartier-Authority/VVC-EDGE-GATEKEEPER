@@ -60,8 +60,8 @@ La validación local se ejecutó con el ciclo de limpieza, pruebas, lint y empaq
 
 | Artefacto | Tamaño | SHA-256 |
 |---|---:|---|
-| `app-debug.apk` | 7.6 MB | `8730caec9bf0f5bff186d985d14cdac368b9e4512b70c8aa8ee1143566c13d09` |
-| `app-release-unsigned.apk` | 5.7 MB | `84909cc281a6a80421d025a70fc13c4a30087d7f3d979d342af3d09e0a250063` |
+| `app-debug.apk` | 7.6 MB | `410950393017c4c1c7cfdc7c9ac349049c91e8e28ef21989e4cb1dc688d02a49` |
+| `app-release-unsigned.apk` | 5.7 MB | `fbc55cda9b4753cc3c3d0105553fca9b5210e211a832b53029bd956412e31315` |
 
 ## Advertencias pendientes no bloqueantes
 
