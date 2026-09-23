@@ -1,0 +1,94 @@
+.name: "1. Audit Kotlin Code - VVC EDGE GATEKEEPER"
+
+on:
+  pull_request:
+    paths:
+      - '**/*.kt'
+      - '**/*.kts'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  audit_kotlin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Google GenAI SDK
+        run: |
+          pip install google-genai
+
+      - name: Run Gemini Audit on Kotlin Code
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c '
+          import os
+          import subprocess
+          from google import genai
+
+          client = genai.Client()
+
+          # Capturar diffs exclusivamente en archivos Kotlin o Gradle Scripts
+          try:
+              diff = subprocess.check_output(["git", "diff", "origin/main...HEAD", "--", "*.kt", "*.kts"]).decode("utf-8")
+          except Exception:
+              diff = ""
+
+          if not diff.strip():
+              diff = "Sin cambios detectados en archivos Kotlin/KTS."
+
+          prompt = f"""
+          Actúa como Auditor Senior de Seguridad y Calidad en Kotlin/Android Native para el repositorio VVC-EDGE-GATEKEEPER.
+          Analiza el siguiente diff de código.
+
+          Aspectos críticos a revisar:
+          1. Manejo seguro de datos biométricos (BiometricPrompt, CryptoObject, Keystore).
+          2. Fugas de memoria en Coroutines, StateFlow / SharedFlow o Lifecycle.
+          3. Gestión estricta de permisos de cámara y privacidad local (Zero-Cloud).
+          4. Reglas de Clean Code y Bad Practices en Kotlin.
+
+          Proporciona un informe estructurado en Markdown con acciones concretas.
+
+          Diff de Código Kotlin:
+          {diff[:30000]}
+          """
+
+          response = client.models.generate_content(
+              model="gemini-2.5-pro",
+              contents=prompt,
+          )
+
+          with open("audit_report.md", "w") as f:
+              f.write(response.text)
+          '
+
+      - name: Upload Audit Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotlin-audit-report
+          path: audit_report.md
+
+      - name: Post Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('audit_report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### 🛡️ [VVC-EDGE-GATEKEEPER] Informe de Auditoría Kotlin (Gemini)\n\n${report}`
+            });
